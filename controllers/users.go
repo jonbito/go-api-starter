@@ -1,11 +1,11 @@
 package controllers
 
 import (
+	"go-api-starter/models"
+
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
-	"go-api-starter/models"
 	"golang.org/x/crypto/bcrypt"
-	"net/http"
 )
 
 type UserBindingModel struct {
@@ -29,12 +29,21 @@ func NewUserController(db *gorm.DB) *UserController {
 func (c UserController) Create(context *gin.Context) {
 	var bindingModel UserBindingModel
 	if err := context.ShouldBindJSON(&bindingModel); err != nil {
-		context.AbortWithStatusJSON(400, err)
+		context.AbortWithError(400, err)
+		return
+	}
+
+	// check password length
+	if len(bindingModel.Password) < 6 {
+		context.AbortWithStatusJSON(400, gin.H{
+			"error": "Password must be at least 6 characters long",
+		})
+		return
 	}
 
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(bindingModel.Password), bcrypt.DefaultCost)
 	if err != nil {
-		context.JSON(http.StatusInternalServerError, gin.H{"error": err})
+		context.AbortWithError(400, err)
 		return
 	}
 
@@ -44,6 +53,11 @@ func (c UserController) Create(context *gin.Context) {
 	}
 
 	if err = c.DB.Create(&user).Error; err != nil {
-		context.JSON(http.StatusInternalServerError, gin.H{"error": err})
+		context.AbortWithError(500, err)
+		return
 	}
+
+	context.JSON(201, gin.H{
+		"data": user,
+	})
 }
