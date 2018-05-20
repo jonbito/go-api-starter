@@ -8,7 +8,7 @@ import (
 
 // Routes creates all routes used in the API
 func Routes(r *gin.Engine) {
-	authMiddleware := middleware.CreateAuthMiddleware(r, DB)
+	authMiddleware := middleware.CreateAuthMiddleware(DB)
 
 	r.POST("/auth/login", authMiddleware.LoginHandler)
 	userController := controllers.NewUserController(DB)

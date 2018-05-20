@@ -9,7 +9,7 @@ import (
 )
 
 // CreateAuthMiddleware creates authentication middleware for gin
-func CreateAuthMiddleware(r *gin.Engine, db *gorm.DB) *jwt.GinJWTMiddleware {
+func CreateAuthMiddleware(db *gorm.DB) *jwt.GinJWTMiddleware {
 	// Setup Auth Middleware
 	return &jwt.GinJWTMiddleware{
 		Realm:      "my realm",
