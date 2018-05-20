@@ -12,6 +12,7 @@ func main() {
 	// automigrate the database
 	Migrate()
 
+	// setup gin
 	r := gin.Default()
 	r.Use(middleware.ErrorMiddleware)
 

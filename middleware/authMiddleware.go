@@ -9,13 +9,13 @@ import (
 )
 
 // CreateAuthMiddleware creates authentication middleware for gin
-func CreateAuthMiddleware(db *gorm.DB) *jwt.GinJWTMiddleware {
+func CreateAuthMiddleware(db *gorm.DB, realm string, secret string, timeout time.Duration, maxRefresh time.Duration) *jwt.GinJWTMiddleware {
 	// Setup Auth Middleware
 	return &jwt.GinJWTMiddleware{
-		Realm:      "my realm",
-		Key:        []byte("secret key"),
-		Timeout:    time.Hour,
-		MaxRefresh: time.Hour,
+		Realm:      realm,
+		Key:        []byte(secret),
+		Timeout:    timeout,
+		MaxRefresh: maxRefresh,
 		Authenticator: func(email string, password string, c *gin.Context) (string, bool) {
 			hash, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 			if err != nil {

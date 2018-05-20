@@ -24,6 +24,20 @@ var Config = ConfigContainer{
 	RateLimiterPeriod: 1 * time.Hour,
 	// The number of requests allowed in RateLimiterPeriod
 	RateLimiterLimit: 1000,
+
+	/// JWT
+
+	// Realm name to display to the user.
+	JWTRealm: "my realm",
+	// Secret key used for signing.
+	JWTSecret: "super secret key",
+	// Duration that a jwt token is valid.
+	JWTTimeout: time.Hour,
+	// This field allows clients to refresh their token until MaxRefresh has passed.
+	// Note that clients can refresh their token in the last moment of MaxRefresh.
+	// This means that the maximum validity timespan for a token is MaxRefresh + Timeout.
+	// 0 means not refreshable.
+	JWTMaxRefresh: time.Hour,
 }
 
 ////////////////////////////////////////////////
@@ -37,4 +51,8 @@ type ConfigContainer struct {
 	MigrationModels   []interface{}
 	RateLimiterPeriod time.Duration
 	RateLimiterLimit  int64
+	JWTRealm          string
+	JWTSecret         string
+	JWTTimeout        time.Duration
+	JWTMaxRefresh     time.Duration
 }
