@@ -7,10 +7,10 @@ import (
 
 func main() {
 	// initialize the db
-	InitializeDB()
+	db := InitializeDB()
 
 	// automigrate the database
-	Migrate()
+	db.AutoMigrate(Config.MigrationModels...)
 
 	// setup gin
 	r := gin.Default()
@@ -19,8 +19,8 @@ func main() {
 	// Add rate limit middleware
 	r.Use(middleware.RateLimiter(Config.RateLimiterPeriod, Config.RateLimiterLimit))
 
-	// setup the routes
-	Routes(r)
+	// This is where all the action takes place
+	Routes(r, db)
 
 	// use the environment variable PORT or 8080 if PORT is not defined
 	r.Run(":" + GetEnv("PORT", "8080"))

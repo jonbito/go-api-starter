@@ -4,14 +4,11 @@ import (
 	"github.com/jinzhu/gorm"
 )
 
-// DB contains the currently open database connection
-var DB *gorm.DB
-
 // InitializeDB opens the database connection and stores the value in DB
-func InitializeDB() {
+func InitializeDB() *gorm.DB {
 	db, err := gorm.Open(Config.DatabaseDialect, Config.DatabaseURL)
 	if err != nil {
 		panic(err)
 	}
-	DB = db
+	return db
 }

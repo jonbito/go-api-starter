@@ -7,8 +7,12 @@ import (
 	"go-api-starter/models"
 )
 
-// Config is where we can globally change any configurate data
+// Config is where you change global configuration data
 var Config = ConfigContainer{
+
+	/// DATABASE
+	/////////////////////////////////////
+
 	// DatabaseDialect is the GORM dialect. see gorm.io for more information.  If this changes, you will need to import it above!
 	DatabaseDialect: "postgres",
 	// GetEnv tries to get an environment variable called DATABASE_URL. If it's not found, we use the second parameter.  see: getEnv.go
@@ -19,6 +23,7 @@ var Config = ConfigContainer{
 	},
 
 	/// Rate Limit
+	/////////////////////////////////////
 
 	// The time duration to limit requests by
 	RateLimiterPeriod: 1 * time.Hour,
@@ -26,6 +31,7 @@ var Config = ConfigContainer{
 	RateLimiterLimit: 1000,
 
 	/// JWT
+	/////////////////////////////////////
 
 	// Realm name to display to the user.
 	JWTRealm: "my realm",
@@ -44,7 +50,7 @@ var Config = ConfigContainer{
 /// NO NEED TO EDIT BELOW THIS LINE
 ////////////////////////////////////////////////
 
-// ConfigContainer is simply a container for the config data.  No need to change this unless you want to add more config attributes
+// ConfigContainer is simply a container for the config data.  No need to change this unless you want to add more config options
 type ConfigContainer struct {
 	DatabaseURL       string
 	DatabaseDialect   string
