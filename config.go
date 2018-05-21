@@ -29,6 +29,9 @@ var Config = ConfigContainer{
 	RateLimiterPeriod: 1 * time.Hour,
 	// The number of requests allowed in RateLimiterPeriod
 	RateLimiterLimit: 1000,
+	// Same as above but for the login route
+	RateLimiterLoginPeriod: 1 * time.Hour,
+	RateLimiterLoginLimit:  15,
 
 	/// JWT
 	/////////////////////////////////////
@@ -52,13 +55,15 @@ var Config = ConfigContainer{
 
 // ConfigContainer is simply a container for the config data.  No need to change this unless you want to add more config options
 type ConfigContainer struct {
-	DatabaseURL       string
-	DatabaseDialect   string
-	MigrationModels   []interface{}
-	RateLimiterPeriod time.Duration
-	RateLimiterLimit  int64
-	JWTRealm          string
-	JWTSecret         string
-	JWTTimeout        time.Duration
-	JWTMaxRefresh     time.Duration
+	DatabaseURL            string
+	DatabaseDialect        string
+	MigrationModels        []interface{}
+	RateLimiterPeriod      time.Duration
+	RateLimiterLimit       int64
+	RateLimiterLoginPeriod time.Duration
+	RateLimiterLoginLimit  int64
+	JWTRealm               string
+	JWTSecret              string
+	JWTTimeout             time.Duration
+	JWTMaxRefresh          time.Duration
 }

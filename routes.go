@@ -13,8 +13,8 @@ func Routes(r *gin.Engine, db *gorm.DB) {
 	authMiddleware := middleware.CreateAuthMiddleware(db, Config.JWTRealm, Config.JWTSecret, Config.JWTTimeout, Config.JWTMaxRefresh)
 
 	// Do not require authentication for these routes
-	r.POST("/auth/login", authMiddleware.LoginHandler)
 	userController := controllers.NewUserController(db)
+	r.POST("/auth/login", authMiddleware.LoginHandler, middleware.RateLimiter(Config.RateLimiterLoginPeriod, Config.RateLimiterLoginLimit))
 	r.POST("/users/create", userController.Create)
 
 	// Require JWT Authentication
