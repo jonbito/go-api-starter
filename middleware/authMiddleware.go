@@ -1,11 +1,14 @@
 package middleware
 
 import (
+	"fmt"
+	"go-api-starter/models"
+	"time"
+
 	"github.com/appleboy/gin-jwt"
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
 	"golang.org/x/crypto/bcrypt"
-	"time"
 )
 
 // CreateAuthMiddleware creates authentication middleware for gin
@@ -17,16 +20,15 @@ func CreateAuthMiddleware(db *gorm.DB, realm string, secret string, timeout time
 		Timeout:    timeout,
 		MaxRefresh: maxRefresh,
 		Authenticator: func(email string, password string, c *gin.Context) (string, bool) {
-			hash, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
-			if err != nil {
-				return email, false
+			var user models.User
+			if db.Where("email = ?", email).First(&user).RecordNotFound() {
+				return "", false
+			}
+			if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password)); err != nil {
+				return "", false
 			}
 
-			if db.Table("users").Where("email = ?", email).Where("password = ?", hash).RecordNotFound() {
-				return email, false
-			}
-
-			return email, true
+			return fmt.Sprint(user.ID), true
 		},
 		Authorizator: func(email string, c *gin.Context) bool {
 			return true
