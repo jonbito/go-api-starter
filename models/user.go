@@ -11,4 +11,5 @@ type User struct {
 	Password  string `gorm:"not null"`
 	FirstName string `gorm:"type:varchar(30)"`
 	LastName  string `gorm:"type:varchar(30)"`
+	Role      string `gorm:"type:varchar(15)"`
 }
