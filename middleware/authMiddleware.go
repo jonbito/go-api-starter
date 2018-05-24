@@ -3,16 +3,16 @@ package middleware
 import (
 	"fmt"
 	"go-api-starter/models"
+	"go-api-starter/repository"
 	"time"
 
 	"github.com/appleboy/gin-jwt"
 	"github.com/gin-gonic/gin"
-	"github.com/jinzhu/gorm"
 	"golang.org/x/crypto/bcrypt"
 )
 
 // CreateAuthMiddleware creates authentication middleware for gin
-func CreateAuthMiddleware(db *gorm.DB, realm string, secret string, timeout time.Duration, maxRefresh time.Duration) *jwt.GinJWTMiddleware {
+func CreateAuthMiddleware(repo repository.IRepository, realm string, secret string, timeout time.Duration, maxRefresh time.Duration) *jwt.GinJWTMiddleware {
 	// Setup Auth Middleware
 	return &jwt.GinJWTMiddleware{
 		Realm:      realm,

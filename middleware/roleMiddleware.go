@@ -1,14 +1,15 @@
 package middleware
 
 import (
+	"go-api-starter/models"
+	"go-api-starter/repository"
+
 	"github.com/appleboy/gin-jwt"
 	"github.com/gin-gonic/gin"
-	"github.com/jinzhu/gorm"
-	"go-api-starter/models"
 )
 
 // RoleMiddleware checks if the user has a role assigned, if not, the request is aborted
-func RoleMiddleware(db *gorm.DB, role string) gin.HandlerFunc {
+func RoleMiddleware(repo repository.IRepository, role string) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		claims := jwt.ExtractClaims(c)
 		if claims["id"] == nil {
@@ -17,7 +18,7 @@ func RoleMiddleware(db *gorm.DB, role string) gin.HandlerFunc {
 		}
 
 		var user models.User
-		if db.Find(&user, claims["id"]).Error != nil {
+		if repo.Find(&user, claims["id"]) != nil {
 			errorOut(c)
 			return
 		}

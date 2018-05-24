@@ -2,9 +2,9 @@ package controllers
 
 import (
 	"go-api-starter/models"
+	"go-api-starter/repository"
 
 	"github.com/gin-gonic/gin"
-	"github.com/jinzhu/gorm"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -15,13 +15,13 @@ type UserBindingModel struct {
 
 // UserController is the controller for the /users route
 type UserController struct {
-	DB *gorm.DB
+	repo repository.IRepository
 }
 
 // NewUserController creates a new controller
-func NewUserController(db *gorm.DB) *UserController {
+func NewUserController(repo repository.IRepository) *UserController {
 	c := new(UserController)
-	c.DB = db
+	c.repo = repo
 	return c
 }
 
@@ -52,7 +52,7 @@ func (c UserController) Create(context *gin.Context) {
 		Password: string(hashedPassword),
 	}
 
-	if err = c.DB.Create(&user).Error; err != nil {
+	if err = c.repo.Create(&user); err != nil {
 		context.AbortWithError(500, err)
 		return
 	}

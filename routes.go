@@ -3,6 +3,7 @@ package main
 import (
 	"go-api-starter/controllers"
 	"go-api-starter/middleware"
+	"go-api-starter/repository"
 
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
@@ -14,7 +15,8 @@ func Routes(r *gin.Engine, db *gorm.DB) {
 	authMiddleware := middleware.CreateAuthMiddleware(db, Config.JWTRealm, Config.JWTSecret, Config.JWTTimeout, Config.JWTMaxRefresh)
 
 	// Do not require authentication for these routes
-	userController := controllers.NewUserController(db)
+	repo := repository.NewGormRepository(db)
+	userController := controllers.NewUserController(repo)
 	r.POST("/auth/login", authMiddleware.LoginHandler, middleware.RateLimiter(Config.RateLimiterLoginPeriod, Config.RateLimiterLoginLimit))
 	r.POST("/users/create", userController.Create)
 
