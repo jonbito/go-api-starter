@@ -21,7 +21,7 @@ func CreateAuthMiddleware(repo repository.IRepository, realm string, secret stri
 		MaxRefresh: maxRefresh,
 		Authenticator: func(email string, password string, c *gin.Context) (string, bool) {
 			var user models.User
-			if db.Where("email = ?", email).First(&user).RecordNotFound() {
+			if err := repo.First(&user, "email = ?", email); err != nil {
 				return "", false
 			}
 			if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password)); err != nil {

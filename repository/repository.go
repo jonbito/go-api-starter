@@ -8,6 +8,7 @@ import (
 type IRepository interface {
 	Create(data interface{}) error
 	Find(out interface{}, where ...interface{}) error
+	First(out interface{}, where ...interface{}) error
 }
 
 // GormRepository is a repository that uses GORM and upholds the IRepository interface
@@ -23,6 +24,10 @@ func (r *GormRepository) Create(data interface{}) error {
 // Find retrieves a database entry and places it in data
 func (r *GormRepository) Find(out interface{}, where ...interface{}) error {
 	return r.DB.Find(out, where...).Error
+}
+
+func (r *GormRepository) First(out interface{}, where ...interface{}) error {
+	return r.DB.First(out, where...).Error
 }
 
 // NewGormRepository returns a new GormRepository

@@ -3,6 +3,7 @@ package main
 import (
 	"github.com/gin-gonic/gin"
 	"go-api-starter/middleware"
+	"go-api-starter/repository"
 )
 
 func main() {
@@ -20,7 +21,9 @@ func main() {
 	r.Use(middleware.RateLimiter(Config.RateLimiterPeriod, Config.RateLimiterLimit))
 
 	// This is where all the action takes place
-	Routes(r, db)
+	// setup the repo
+	repo := repository.NewGormRepository(db)
+	Routes(r, repo)
 
 	// use the environment variable PORT or 8080 if PORT is not defined
 	r.Run(":" + GetEnv("PORT", "8080"))
