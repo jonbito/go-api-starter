@@ -26,6 +26,7 @@ func (r *GormRepository) Find(out interface{}, where ...interface{}) error {
 	return r.DB.Find(out, where...).Error
 }
 
+// First returns the first entry in the database query
 func (r *GormRepository) First(out interface{}, where ...interface{}) error {
 	return r.DB.First(out, where...).Error
 }
