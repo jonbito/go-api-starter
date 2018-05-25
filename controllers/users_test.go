@@ -1,11 +1,8 @@
 package controllers
 
 import (
-	"github.com/gin-gonic/gin"
-	"github.com/stretchr/testify/assert"
 	"go-api-starter/models"
 	"go-api-starter/repository"
-	"net/http/httptest"
 	"testing"
 )
 
@@ -14,7 +11,7 @@ type MockUserRepository struct {
 }
 
 func (r *MockUserRepository) Create(data interface{}) error {
-	user, ok := data.(models.User)
+	user, ok := data.(*models.User)
 	if !ok {
 		panic("Could not convert data to user")
 	}

@@ -16,7 +16,7 @@ func Routes(r *gin.Engine, repo repository.IRepository) {
 	// Do not require authentication for these routes
 	userController := controllers.NewUserController(repo)
 	r.POST("/auth/login", authMiddleware.LoginHandler, middleware.RateLimiter(Config.RateLimiterLoginPeriod, Config.RateLimiterLoginLimit))
-	r.POST("/users/create", userController.Create)
+	r.POST("/users/create", controllers.ExecuteControllerMethod(&controllers.UserBindingModel{}, userController.Create))
 
 	// Require JWT Authentication
 	auth := r.Group("/")

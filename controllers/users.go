@@ -4,7 +4,6 @@ import (
 	"go-api-starter/models"
 	"go-api-starter/repository"
 
-	"github.com/gin-gonic/gin"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -26,38 +25,47 @@ func NewUserController(repo repository.IRepository) *UserController {
 }
 
 // Create creates a new user
-func (c UserController) Create(context *gin.Context) {
-	var bindingModel UserBindingModel
-	if err := context.ShouldBindJSON(&bindingModel); err != nil {
-		context.AbortWithError(400, err)
-		return
+func (c UserController) Create(bindingModel interface{}) ControllerResult {
+
+	model, ok := bindingModel.(*UserBindingModel)
+	if !ok {
+		panic("Cannot convert bindingModel to UserBindingModel")
 	}
 
 	// check password length
-	if len(bindingModel.Password) < 6 {
-		context.AbortWithStatusJSON(400, gin.H{
-			"error": "Password must be at least 6 characters long",
-		})
-		return
+	if len(model.Password) < 6 {
+		return ControllerResult{
+			Success:      false,
+			ErrorMessage: "Password must be at least 6 characters long",
+			Code:         400,
+		}
 	}
 
-	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(bindingModel.Password), bcrypt.DefaultCost)
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(model.Password), bcrypt.DefaultCost)
 	if err != nil {
-		context.AbortWithError(400, err)
-		return
+		return ControllerResult{
+			Success: false,
+			Error:   err,
+			Code:    500,
+		}
 	}
 
 	user := models.User{
-		Email:    bindingModel.Email,
+		Email:    model.Email,
 		Password: string(hashedPassword),
 	}
 
 	if err = c.repo.Create(&user); err != nil {
-		context.AbortWithError(500, err)
-		return
+		return ControllerResult{
+			Success: false,
+			Error:   err,
+			Code:    500,
+		}
 	}
 
-	context.JSON(201, gin.H{
-		"data": user,
-	})
+	return ControllerResult{
+		Success: true,
+		Data:    user,
+		Code:    201,
+	}
 }
