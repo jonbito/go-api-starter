@@ -4,6 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// ExecuteControllerMethod is called on every route. It validates the request body, calls the controller method, and returns an http response
 func ExecuteControllerMethod(bindingModel interface{}, method func(interface{}) ControllerResult) gin.HandlerFunc {
 	return func(context *gin.Context) {
 		if err := context.ShouldBindJSON(bindingModel); err != nil {
@@ -26,7 +27,9 @@ func ExecuteControllerMethod(bindingModel interface{}, method func(interface{}) 
 				})
 			}
 		} else {
-			context.JSON(r.Code, r.Data)
+			context.JSON(r.Code, gin.H{
+				"data": r.Data,
+			})
 		}
 	}
 }
