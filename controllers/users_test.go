@@ -4,6 +4,8 @@ import (
 	"go-api-starter/models"
 	"go-api-starter/repository"
 	"testing"
+
+	"gopkg.in/go-playground/validator.v8"
 )
 
 type MockUserRepository struct {
@@ -43,5 +45,19 @@ func TestCreate(t *testing.T) {
 	}
 	if user.FirstName != "Joe" {
 		t.Error("Did not receive the correct user")
+	}
+}
+
+func TestUserBindingModel(t *testing.T) {
+	bindingModel := UserBindingModel{
+		Email:    "asdf",
+		Password: "asdf",
+	}
+	v := validator.New(&validator.Config{
+		TagName: "binding",
+	})
+
+	if err := v.Struct(bindingModel); err != nil {
+		t.Error(err.Error())
 	}
 }
