@@ -6,7 +6,7 @@ import (
 
 func ExecuteControllerMethod(bindingModel interface{}, method func(interface{}) ControllerResult) gin.HandlerFunc {
 	return func(context *gin.Context) {
-		if err := context.ShouldBindJSON(&bindingModel); err != nil {
+		if err := context.ShouldBindJSON(bindingModel); err != nil {
 			context.AbortWithError(400, err)
 			return
 		}
