@@ -3,6 +3,7 @@ package controllers
 import (
 	"go-api-starter/models"
 	"go-api-starter/repository"
+	"strings"
 	"testing"
 
 	"gopkg.in/go-playground/validator.v8"
@@ -57,7 +58,20 @@ func TestUserBindingModel(t *testing.T) {
 		TagName: "binding",
 	})
 
-	if err := v.Struct(bindingModel); err != nil {
-		t.Error(err.Error())
+	err := v.Struct(bindingModel)
+	if err == nil {
+		t.Error("No error")
+	}
+	if err != nil && !strings.Contains(err.Error(), "UserBindingModel.Email") {
+		t.Error("Email validation failed")
+	}
+
+	bindingModel = UserBindingModel{
+		Email:    "asdf@asdf.com",
+		Password: "asdf",
+	}
+	err = v.Struct(bindingModel)
+	if err != nil {
+		t.Error("Validation should have passed")
 	}
 }
